@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Calendar</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            text-align: center;
+            padding: 8px;
+            vertical-align: top;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .event {
+            background-color: #add8e6;
+            border-radius: 5px;
+            padding: 5px;
+            margin: 2px 0;
+        }
+        .add-event-button {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>{{ month_name }}</h1>
+    <a class="add-event-button" href="{% url 'add-event' %}">Add Event</a>
+    <table>
+        <thead>
+            <tr>
+                <th>Time</th>
+                {% for day in days %}
+                    <th>{{ day|date:"jS" }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in calendar_data %}
+                <tr>
+                    <td>{{ row.hour }}:00</td>
+                    {% for events in row.events %}
+                        <td>
+                            {% if events %}
+                                {% for event in events %}
+                                    <div class="event">
+                                        {{ event.title }}
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                        </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

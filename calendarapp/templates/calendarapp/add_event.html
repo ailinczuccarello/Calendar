@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add New Event</title>
+</head>
+<body>
+    <h1>Add New Event</h1>
+    <form method="post">
+        {% csrf_token %}
+        
+        <label for="id_title">Event Title:</label>
+        {{ form.title }}
+        <br><br>
+
+        <label for="id_start_time">Start Time:</label>
+        {{ form.start_time }}
+        <br><br>
+
+        <label for="id_end_time">End Time:</label>
+        {{ form.end_time }}
+        <br><br>
+
+        <button type="submit">Save</button>
+    </form>
+    <a href="{% url 'calendar' %}">Back to Calendar</a>
+</body>
+</html>
