@@ -4,5 +4,6 @@ This is a calendar web application built using Django. It allows users to create
 
 ## Features
 -Create, modify, delete events
+
 -Personalized view
 

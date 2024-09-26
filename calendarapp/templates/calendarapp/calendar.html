@@ -25,10 +25,39 @@
         .add-event-button {
             margin-bottom: 20px;
         }
+        /* Flexbox container to arrange buttons and title */
+        .navigation-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .navigation-container h1 {
+            margin: 0; /* Remove default margin for centered title */
+        }
+        .nav-button {
+            text-decoration: none;
+            padding: 10px;
+            background-color: #ddd;
+            border-radius: 5px;
+            color: #333;
+        }
+        .nav-button:hover {
+            background-color: #bbb;
+        }
     </style>
 </head>
 <body>
-    <h1>{{ month_name }}</h1>
+    <div class="navigation-container">
+        <!-- Previous month button on the left side -->
+        <a class="nav-button" href="{% url 'calendar-view' previous_year previous_month %}">&lt; Previous Month</a>
+        
+        <!-- Centered title -->
+        <h1>{{ month_name }}</h1>
+        
+        <!-- Next month button on the right side -->
+        <a class="nav-button" href="{% url 'calendar-view' next_year next_month %}">Next Month &gt;</a>
+    </div>
     <a class="add-event-button" href="{% url 'add-event' %}">Add Event</a>
     <table>
         <thead>

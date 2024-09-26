@@ -4,21 +4,35 @@ from .models import Event
 from .forms import EventForm
 from datetime import datetime, timedelta
 
-def calendar_view(request):
+def calendar_view(request, year=None, month=None):
+    # Get the current date if no month and year are provided
     today = datetime.today()
-    month_start = today.replace(day=1)
-    next_month = month_start.replace(month=today.month % 12 + 1, day=1)
-    days_in_month = (next_month - timedelta(days=1)).day
+    if not year:
+        year = today.year
+    if not month:
+        month = today.month
 
+    # Set the first day of the provided month and calculate the next month
+    month_start = datetime(year, month, 1)
+    if month == 12:
+        next_month_start = datetime(year + 1, 1, 1)
+    else:
+        next_month_start = datetime(year, month + 1, 1)
+
+    # Calculate the number of days in the current month
+    days_in_month = (next_month_start - timedelta(days=1)).day
     days = [month_start + timedelta(days=i) for i in range(days_in_month)]
+    
+    # Initialize hours of the day (24-hour format)
     hours = list(range(24))
 
     # Initialize a matrix to hold events by day and hour
     calendar_matrix = [[[] for _ in range(days_in_month)] for _ in range(24)]
 
+    # Query events for the current month and year
     events = Event.objects.filter(
-        start_time__month=today.month,
-        start_time__year=today.year
+        start_time__month=month,
+        start_time__year=year
     )
 
     # Populate the matrix with events
@@ -28,8 +42,7 @@ def calendar_view(request):
         calendar_matrix[event_hour][event_day].append(event)
 
     # Get the month name for the title
-    month_name = today.strftime('%B %Y')  # Full month name and year
-
+    month_name = month_start.strftime('%B %Y')
 
     # Create a simple data structure for the template
     calendar_data = []
@@ -42,12 +55,36 @@ def calendar_view(request):
             row["events"].append(calendar_matrix[hour][day])
         calendar_data.append(row)
 
+    # Calculate the previous and next month (handle year transition)
+    if month == 1:
+        previous_month = 12
+        previous_year = year - 1
+    else:
+        previous_month = month - 1
+        previous_year = year
+
+    if month == 12:
+        next_month = 1
+        next_year = year + 1
+    else:
+        next_month = month + 1
+        next_year = year
+
+    # Prepare the context for rendering the template
     context = {
         'days': days,
         'calendar_data': calendar_data,
         'month_name': month_name,
+        'current_year': year,
+        'current_month': month,
+        'previous_month': previous_month,
+        'previous_year': previous_year,
+        'next_month': next_month,
+        'next_year': next_year,
     }
+    
     return render(request, 'calendarapp/calendar.html', context)
+
 def events_json(request):
     events = Event.objects.all()
     events_data = [{
