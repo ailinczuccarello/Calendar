@@ -78,6 +78,7 @@
                                 {% for event in events %}
                                     <div class="event">
                                         {{ event.title }}
+                                        <a href="{% url 'edit-event' event.id %}">Edit</a>
                                     </div>
                                 {% endfor %}
                             {% endif %}

@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from .models import Event
 from .forms import EventForm
@@ -104,3 +104,20 @@ def add_event(request):
     else:
         form = EventForm()
     return render(request, 'calendarapp/add_event.html', {'form': form})
+
+def edit_event_view(request, event_id):
+    event = get_object_or_404(Event, id=event_id)  # Retrieve the event by its ID
+
+    if request.method == 'POST':
+        if 'delete' in request.POST:  # Check if the delete button was pressed
+            event.delete()  # Delete the event
+            return redirect('calendar')  # Redirect to the calendar view after deletion
+        else:
+            form = EventForm(request.POST, instance=event)  # Bind form to the existing event
+            if form.is_valid():
+                form.save()  # Save the updated event to the database
+                return redirect('calendar')  # Redirect to the calendar view
+    else:
+        form = EventForm(instance=event)  # Populate the form with current event data
+
+    return render(request, 'calendarapp/edit_event.html', {'form': form, 'event': event})
