@@ -1,0 +1,90 @@
+<!-- Modal for customizing calendar aesthetics -->
+<div id="customizeModal" class="modal">
+    <div class="modal-content">
+        <span class="close" id="closeModalBtn">&times;</span>
+        <h2>Customize looks</h2>
+        <form id="customizeForm" method="POST" action="{% url 'calendar-view' current_year current_month %}">
+            {% csrf_token %}
+
+            <label for="start_row">Select Starting Row:</label>
+            <select name="start_row" id="start_row">
+                {% for hour in hours_list %}
+                    <option value="{{ hour }}" {% if hour == current_start_row %}selected{% endif %}>{{ hour }}:00</option>
+                {% endfor %}
+            </select>
+            <br><br>
+
+            <label for="end_row">Select Ending Row:</label>
+            <select name="end_row" id="end_row">
+                {% for hour in hours_list %}
+                    <option value="{{ hour }}" {% if hour == current_end_row %}selected{% endif %}>{{ hour }}:00</option>
+                {% endfor %}
+            </select>
+            <br><br>
+
+            <label for="bgColor">Background Color:</label>
+            <input type="color" id="bgColor" name="bgColor" value="#ffffff">
+            <br><br>
+
+            <label for="fontSize">Font Size:</label>
+            <input type="number" id="fontSize" name="fontSize" min="12" max="36" value="14">
+            <br><br>
+
+            <button type="button" onclick="applyCustomization()">Apply</button>
+        </form>
+    </div>
+</div>
+<script>
+    // Get the modal element and buttons
+    var modal = document.getElementById("customizeModal");
+    var openModalBtn = document.getElementById("openModalBtn");
+    var closeModalBtn = document.getElementById("closeModalBtn");
+
+    // When the user clicks the button, open the modal
+    openModalBtn.onclick = function() {
+        modal.style.display = "block";
+    }
+
+    // When the user clicks on the close button, close the modal
+    closeModalBtn.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    // When the user clicks anywhere outside the modal, close it
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+    // Apply customization changes
+    function applyCustomization() {
+        // Get values from the form
+        var bgColor = document.getElementById('bgColor').value;
+        var fontSize = document.getElementById('fontSize').value;
+        var startRow = document.getElementById('start_row').value;
+        var endRow = document.getElementById('end_row').value;
+
+        // Apply changes to the calendar
+        var table = document.querySelector('table');
+        table.style.backgroundColor = bgColor;
+        table.style.fontSize = fontSize + 'px';
+
+        // Hide all rows initially
+        var rows = table.getElementsByTagName('tr');
+        
+        // Loop through all rows to show only the selected range
+        for (var i = 1; i < rows.length; i++) { // Start from 1 to skip header
+            if (i > startRow && i <= endRow) {
+                rows[i].style.display = ''; // Show row
+            } else {
+                rows[i].style.display = 'none'; // Hide row
+            }
+        }
+
+        // Close the modal
+        modal.style.display = "none";
+    }
+    {% include 'calendarapp/modal.html' %}
+</script>
+

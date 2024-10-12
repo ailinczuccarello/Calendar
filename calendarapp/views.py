@@ -11,6 +11,9 @@ def calendar_view(request, year=None, month=None):
         year = today.year
     if not month:
         month = today.month
+    
+    # Determine the current day
+    current_day = today.day if year == today.year and month == today.month else None
 
     # Set the first day of the provided month and calculate the next month
     month_start = datetime(year, month, 1)
@@ -85,6 +88,7 @@ def calendar_view(request, year=None, month=None):
     # Prepare the context for rendering the template
     context = {
         'days': days,
+        'current_day': current_day,
         'calendar_data': calendar_data,
         'month_name': month_name,
         'current_year': year,
