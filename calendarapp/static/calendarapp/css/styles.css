@@ -1,0 +1,69 @@
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+th, td {
+    border: 1px solid #ddd;
+    text-align: center;
+    padding: 8px;
+    vertical-align: top;
+}
+th {
+    background-color: #f2f2f2;
+}
+.event {
+    background-color: #add8e6;
+    border-radius: 5px;
+    padding: 5px;
+    margin: 2px 0;
+}
+.add-event-button, .customize-button {
+    margin-bottom: 20px;
+}
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+/* Flexbox container to arrange buttons and title */
+.navigation-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.navigation-container h1 {
+    margin: 0; /* Remove default margin for centered title */
+}
+.nav-button {
+    text-decoration: none;
+    padding: 10px;
+    background-color: #ddd;
+    border-radius: 5px;
+    color: #333;
+}
+.nav-button:hover {
+    background-color: #bbb;
+}
+/* Modal styling */
+.modal-content {
+    background-color: white;
+    margin: 15% auto;
+    padding: 20px;
+    border-radius: 10px;
+    width: 30%;
+}
+.close {
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.close:hover, .close:focus {
+    color: red;
+}

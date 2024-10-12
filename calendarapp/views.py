@@ -23,8 +23,19 @@ def calendar_view(request, year=None, month=None):
     days_in_month = (next_month_start - timedelta(days=1)).day
     days = [month_start + timedelta(days=i) for i in range(days_in_month)]
     
-    # Initialize hours of the day (24-hour format)
-    hours = list(range(24))
+    # Get the starting and ending rows from the POST request, default to 0 and 23
+    current_start_row = int(request.POST.get('start_row', 0))
+    current_end_row = int(request.POST.get('end_row', 23))
+
+    # Ensure the end row is greater than or equal to the start row
+    if current_end_row < current_start_row:
+        current_end_row = current_start_row
+
+    # Initialize hours of the day based on selected rows
+    hours = list(range(current_start_row, current_end_row + 1))  # Include both start and end rows
+
+    # Create a list of hours from 0 to 23
+    hours_list = list(range(24))  # This will be passed to the template
 
     # Initialize a matrix to hold events by day and hour
     calendar_matrix = [[[] for _ in range(days_in_month)] for _ in range(24)]
@@ -39,20 +50,21 @@ def calendar_view(request, year=None, month=None):
     for event in events:
         event_day = event.start_time.day - 1  # zero-indexed day
         event_hour = event.start_time.hour
-        calendar_matrix[event_hour][event_day].append(event)
+        if current_start_row <= event_hour <= current_end_row:  # Check if the hour is within the selected rows
+            calendar_matrix[event_hour - current_start_row][event_day].append(event)
 
     # Get the month name for the title
     month_name = month_start.strftime('%B %Y')
 
     # Create a simple data structure for the template
     calendar_data = []
-    for hour in range(24):
+    for hour in hours:
         row = {
             "hour": hour,
             "events": []
         }
         for day in range(days_in_month):
-            row["events"].append(calendar_matrix[hour][day])
+            row["events"].append(calendar_matrix[hour - current_start_row][day])
         calendar_data.append(row)
 
     # Calculate the previous and next month (handle year transition)
@@ -81,6 +93,9 @@ def calendar_view(request, year=None, month=None):
         'previous_year': previous_year,
         'next_month': next_month,
         'next_year': next_year,
+        'current_start_row': current_start_row,  # Pass the current starting row to the template
+        'current_end_row': current_end_row,      # Pass the current ending row to the template
+        'hours_list': hours_list,  # Pass the list of hours to the template
     }
     
     return render(request, 'calendarapp/calendar.html', context)
