@@ -13,7 +13,7 @@
         
         <!-- Centered title -->
         <h1>{{ month_name }}</h1>
-        <a class="add-event-button" href="{% url 'add-event' %}">Add Event</a>
+        <button class="add-event-button" id="openAddEventBtn">Add Event</button>
         <button class="customize-button" id="openModalBtn">&#x1F440;</button>
         
         <!-- Next month button on the right side -->
@@ -49,7 +49,7 @@
             {% endfor %}
         </tbody>
     </table>
-
-    
+    {% include 'calendarapp/customize_looks.html' %}   
+    {% include 'calendarapp/add_event_modal.html' %}        
 </body>
 </html>
